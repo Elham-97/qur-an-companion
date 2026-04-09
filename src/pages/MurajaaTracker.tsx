@@ -1,0 +1,99 @@
+import { useState } from "react";
+import { RefreshCw, Turtle, Zap, Check } from "lucide-react";
+import { useHifzData } from "@/hooks/useHifzData";
+import { Button } from "@/components/ui/button";
+import AppreciationToast from "@/components/AppreciationToast";
+import { getAppreciation } from "@/lib/feedback";
+import { cn } from "@/lib/utils";
+
+type ReviewMode = "fixing" | "flow";
+
+export default function MurajaaTracker() {
+  const { data, completeTask } = useHifzData();
+  const [mode, setMode] = useState<ReviewMode>("flow");
+  const [toast, setToast] = useState({ show: false, message: "" });
+
+  const handleComplete = async () => {
+    await completeTask("muraja");
+    setToast({ show: true, message: getAppreciation() });
+  };
+
+  return (
+    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto">
+      <AppreciationToast
+        message={toast.message}
+        show={toast.show}
+        onHide={() => setToast({ show: false, message: "" })}
+      />
+
+      <h1 className="text-xl font-bold text-foreground mb-1 animate-fade-in">Muraja'a</h1>
+      <p className="text-sm text-muted-foreground mb-6 animate-fade-in">Revise and protect your memorization</p>
+
+      {/* Mode Selector */}
+      <div className="flex gap-3 mb-4 animate-fade-in" style={{ animationDelay: "100ms" }}>
+        <button
+          onClick={() => setMode("fixing")}
+          className={cn(
+            "flex-1 glass-card rounded-2xl p-4 flex flex-col items-center gap-2 transition-all",
+            mode === "fixing" && "ring-2 ring-primary"
+          )}
+        >
+          <Turtle className="w-6 h-6 text-fixing" />
+          <span className="text-sm font-semibold text-foreground">Fixing</span>
+          <span className="text-[10px] text-muted-foreground">Slow & detailed</span>
+        </button>
+        <button
+          onClick={() => setMode("flow")}
+          className={cn(
+            "flex-1 glass-card rounded-2xl p-4 flex flex-col items-center gap-2 transition-all",
+            mode === "flow" && "ring-2 ring-primary"
+          )}
+        >
+          <Zap className="w-6 h-6 text-muraja" />
+          <span className="text-sm font-semibold text-foreground">Flow</span>
+          <span className="text-[10px] text-muted-foreground">Continuous review</span>
+        </button>
+      </div>
+
+      {/* Today's Review */}
+      <div className="glass-card rounded-2xl p-5 animate-fade-in" style={{ animationDelay: "200ms" }}>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-muraja flex items-center justify-center">
+            <RefreshCw className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <div>
+            <p className="font-semibold text-foreground">Juz {data.currentMurajaJuz}</p>
+            <p className="text-xs text-muted-foreground">
+              {mode === "fixing" ? "Read slowly, focus on weak spots" : "Read at normal pace, maintain flow"}
+            </p>
+          </div>
+        </div>
+
+        {mode === "fixing" && data.weakPages.length > 0 && (
+          <div className="bg-muted/50 rounded-xl p-3 mb-4">
+            <p className="text-xs font-medium text-foreground mb-1">Weak Pages to Focus On:</p>
+            <div className="flex flex-wrap gap-2">
+              {data.weakPages.slice(0, 4).map((p) => (
+                <span key={p} className="text-xs bg-fixing/20 text-fixing px-2 py-1 rounded-lg font-medium">
+                  Page {p}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <Button
+          onClick={handleComplete}
+          disabled={data.completedToday.muraja}
+          className="w-full rounded-xl h-12 bg-muraja hover:bg-muraja/90 text-primary-foreground font-semibold"
+        >
+          {data.completedToday.muraja ? (
+            <span className="flex items-center gap-2"><Check className="w-4 h-4" /> Completed</span>
+          ) : (
+            "Mark Review Complete"
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
