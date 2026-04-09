@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { BookOpen, RefreshCw, Wrench, BookMarked, Flame } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+
 import { useHifzData } from "@/hooks/useHifzData";
 import TaskCard from "@/components/TaskCard";
 import ProgressRing from "@/components/ProgressRing";
@@ -9,7 +9,7 @@ import { getTodaysTajwid } from "@/lib/quran-data";
 import { getAppreciation, analyzeBehavior } from "@/lib/feedback";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  
   const { data, completeTask, completionRate } = useHifzData();
   const [toast, setToast] = useState({ show: false, message: "" });
   const tajwid = getTodaysTajwid();
@@ -30,7 +30,7 @@ export default function Dashboard() {
     murajaDone: data.completedToday.muraja,
   });
 
-  const firstName = user?.email?.split("@")[0] || "Student";
+  const firstName = "Student";
 
   return (
     <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto">
