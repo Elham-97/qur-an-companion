@@ -1,18 +1,35 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BookOpen } from "lucide-react";
 
 export default function Auth() {
   const navigate = useNavigate();
+  const { login, signup } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/");
+    setError("");
+    setLoading(true);
+    try {
+      if (isLogin) {
+        await login(email, password);
+      } else {
+        await signup(email, password);
+      }
+      navigate("/");
+    } catch (err: any) {
+      setError(err.message || "Authentication failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,6 +44,11 @@ export default function Auth() {
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-6 space-y-4">
+          {error && (
+            <div className="bg-destructive/10 text-destructive text-sm rounded-xl p-3">
+              {error}
+            </div>
+          )}
           <div>
             <label className="text-sm font-medium text-foreground mb-1 block">Email</label>
             <Input
@@ -53,16 +75,17 @@ export default function Auth() {
 
           <Button
             type="submit"
+            disabled={loading}
             className="w-full rounded-xl h-11 gradient-primary text-primary-foreground font-semibold"
           >
-            {isLogin ? "Sign In" : "Create Account"}
+            {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => { setIsLogin(!isLogin); setError(""); }}
               className="text-primary font-medium hover:underline"
             >
               {isLogin ? "Sign up" : "Sign in"}

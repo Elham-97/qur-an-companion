@@ -1,18 +1,23 @@
-import { Home, BookOpen, RefreshCw, BarChart3, User } from "lucide-react";
+import { Home, BookOpen, RefreshCw, BookText, BarChart3, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { path: "/", icon: Home, label: "Home" },
   { path: "/hifz", icon: BookOpen, label: "Hifz" },
   { path: "/muraja", icon: RefreshCw, label: "Muraja'a" },
+  { path: "/quran", icon: BookText, label: "Qur'an" },
   { path: "/progress", icon: BarChart3, label: "Progress" },
-  { path: "/profile", icon: User, label: "Profile" },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Hide nav on auth page or when not logged in
+  if (!user || location.pathname === "/auth") return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 glass-card border-t border-border/50 px-2 pb-safe">
