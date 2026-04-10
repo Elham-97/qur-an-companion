@@ -1,4 +1,4 @@
-import { Home, BookOpen, RefreshCw, BookText, BarChart3, User } from "lucide-react";
+import { Home, BookOpen, RefreshCw, BookText, BarChart3 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -16,11 +16,15 @@ export default function BottomNav() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Hide nav on auth page or when not logged in
   if (!user || location.pathname === "/auth") return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass-card border-t border-border/50 px-2 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/30 px-2 pb-safe"
+         style={{
+           background: 'linear-gradient(135deg, hsla(230, 25%, 10%, 0.9), hsla(250, 25%, 8%, 0.95))',
+           backdropFilter: 'blur(20px)',
+           WebkitBackdropFilter: 'blur(20px)',
+         }}>
       <div className="flex justify-around items-center h-16 max-w-md mx-auto">
         {navItems.map((item) => {
           const active = location.pathname === item.path;
@@ -35,7 +39,7 @@ export default function BottomNav() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <item.icon className={cn("w-5 h-5", active && "stroke-[2.5]")} />
+              <item.icon className={cn("w-5 h-5", active && "stroke-[2.5] drop-shadow-[0_0_6px_hsla(260,60%,60%,0.5)]")} />
               <span className="text-[10px] font-medium">{item.label}</span>
             </button>
           );

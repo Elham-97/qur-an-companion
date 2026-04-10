@@ -16,12 +16,14 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto">
-      <h1 className="text-xl font-bold text-foreground mb-6 animate-fade-in">Profile</h1>
+    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
+      <div className="absolute top-10 left-1/3 w-[250px] h-[200px] rounded-full bg-[hsla(260,60%,50%,0.05)] blur-[80px] pointer-events-none" />
 
-      <div className="glass-card rounded-2xl p-5 flex items-center gap-4 mb-4 animate-fade-in">
-        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-          <User className="w-7 h-7 text-primary" />
+      <h1 className="text-xl font-bold text-gradient mb-6 animate-fade-in">Profile</h1>
+
+      <div className="glass-card-glow rounded-2xl p-5 flex items-center gap-4 mb-4 animate-fade-in">
+        <div className="w-14 h-14 rounded-full gradient-purple-blue flex items-center justify-center shadow-lg">
+          <User className="w-7 h-7 text-primary-foreground" />
         </div>
         <div>
           <p className="font-semibold text-foreground">{user?.email || "Student"}</p>
@@ -54,7 +56,7 @@ export default function Profile() {
       <Button
         onClick={handleLogout}
         variant="outline"
-        className="w-full rounded-xl h-11 border-destructive/30 text-destructive hover:bg-destructive/5"
+        className="w-full rounded-xl h-11 border-destructive/30 text-destructive hover:bg-destructive/10"
       >
         <LogOut className="w-4 h-4 mr-2" /> Sign Out
       </Button>

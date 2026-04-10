@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { BookOpen, RefreshCw, Wrench, BookMarked, Flame } from "lucide-react";
+import { BookOpen, RefreshCw, Wrench, BookMarked, Flame, Sparkles } from "lucide-react";
 
 import { useHifzData } from "@/hooks/useHifzData";
 import TaskCard from "@/components/TaskCard";
@@ -10,7 +10,6 @@ import { getAppreciation, analyzeBehavior } from "@/lib/feedback";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Dashboard() {
-  
   const { data, completeTask, completionRate } = useHifzData();
   const [toast, setToast] = useState({ show: false, message: "" });
   const tajwid = getTodaysTajwid();
@@ -35,7 +34,10 @@ export default function Dashboard() {
   const firstName = user?.email?.split("@")[0] || "Student";
 
   return (
-    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto">
+    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
+      {/* Ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[350px] h-[250px] rounded-full bg-[hsla(260,60%,50%,0.06)] blur-[80px] pointer-events-none" />
+
       <AppreciationToast
         message={toast.message}
         show={toast.show}
@@ -43,17 +45,19 @@ export default function Dashboard() {
       />
 
       {/* Header */}
-      <div className="mb-6 animate-fade-in">
-        <h1 className="text-xl font-bold text-foreground">
+      <div className="mb-6 animate-fade-in relative z-10">
+        <h1 className="text-xl font-bold text-gradient">
           Assalamu Alaikum, {firstName} 🌿
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">{suggestion}</p>
+        <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-primary" />{suggestion}
+        </p>
       </div>
 
       {/* Progress + Streak Row */}
       <div className="flex items-center gap-4 mb-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
         <ProgressRing progress={completionRate()} label="Today" />
-        <div className="glass-card rounded-2xl px-5 py-4 flex-1 flex items-center gap-3">
+        <div className="glass-card-glow rounded-2xl px-5 py-4 flex-1 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl gradient-streak flex items-center justify-center">
             <Flame className="w-5 h-5 text-primary-foreground" />
           </div>
@@ -73,7 +77,7 @@ export default function Dashboard() {
           detail="Memorize 2 new pages"
           completed={data.completedToday.hifz}
           onComplete={() => handleComplete("hifz")}
-          colorClass="gradient-primary"
+          colorClass="gradient-purple-blue"
           delay={200}
         />
         <TaskCard
@@ -83,7 +87,7 @@ export default function Dashboard() {
           detail="Revise 1 juz today"
           completed={data.completedToday.muraja}
           onComplete={() => handleComplete("muraja")}
-          colorClass="bg-muraja"
+          colorClass="gradient-blue-cyan"
           delay={300}
         />
         <TaskCard
@@ -93,7 +97,7 @@ export default function Dashboard() {
           detail="Strengthen 2 weak pages"
           completed={data.completedToday.fixing}
           onComplete={() => handleComplete("fixing")}
-          colorClass="bg-fixing"
+          colorClass="gradient-streak"
           delay={400}
         />
         <TaskCard
@@ -103,7 +107,7 @@ export default function Dashboard() {
           detail={tajwid.description}
           completed={data.completedToday.tajwid}
           onComplete={() => handleComplete("tajwid")}
-          colorClass="bg-tajwid"
+          colorClass="gradient-pink-purple"
           delay={500}
         />
       </div>

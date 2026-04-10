@@ -18,20 +18,27 @@ export default function ProgressRing({ progress, size = 80, strokeWidth = 6, lab
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="hsl(var(--border))"
+          stroke="hsl(var(--muted))"
           strokeWidth={strokeWidth}
         />
+        <defs>
+          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="hsl(260, 60%, 60%)" />
+            <stop offset="100%" stopColor="hsl(210, 80%, 60%)" />
+          </linearGradient>
+        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="hsl(var(--primary))"
+          stroke="url(#progressGradient)"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
           className="transition-all duration-700 ease-out"
+          style={{ filter: 'drop-shadow(0 0 4px hsla(260, 60%, 60%, 0.4))' }}
         />
       </svg>
       {label && <span className="text-xs text-muted-foreground font-medium">{label}</span>}
