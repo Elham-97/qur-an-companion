@@ -27,7 +27,7 @@ export default function TaskCard({
     <div
       className={cn(
         "glass-card rounded-2xl p-4 animate-fade-in transition-all duration-300",
-        completed && "opacity-60"
+        completed && "opacity-50"
       )}
       style={{ animationDelay: `${delay}ms` }}
     >
@@ -35,7 +35,7 @@ export default function TaskCard({
         <div className="flex items-start gap-3">
           <div
             className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
+              "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg",
               colorClass
             )}
           >
@@ -53,8 +53,8 @@ export default function TaskCard({
           className={cn(
             "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 shrink-0",
             completed
-              ? "bg-primary border-primary"
-              : "border-border hover:border-primary hover:bg-primary/10"
+              ? "bg-primary border-primary glow-ring"
+              : "border-border/60 hover:border-primary hover:bg-primary/10"
           )}
         >
           {completed && <Check className="w-4 h-4 text-primary-foreground" />}

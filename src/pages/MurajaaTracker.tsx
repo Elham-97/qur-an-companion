@@ -16,16 +16,13 @@ export default function MurajaaTracker() {
   const [reviewCards, setReviewCards] = useState<ReviewCard[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-  // Initialize review cards from weak pages + some memorized pages
   useEffect(() => {
     const cards: ReviewCard[] = [];
-    // Add weak pages as cards
     data.weakPages.forEach((p) => {
       const card = createCard(p);
-      card.easeFactor = 1.5; // harder
+      card.easeFactor = 1.5;
       cards.push(card);
     });
-    // Add some general pages for review
     for (let i = 1; i <= Math.min(data.totalPagesMemorized, 10); i++) {
       if (!data.weakPages.includes(i)) {
         cards.push(createCard(i));
@@ -56,14 +53,16 @@ export default function MurajaaTracker() {
   const currentCard = dueCards[currentCardIndex];
 
   return (
-    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto">
+    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
+      <div className="absolute top-20 left-0 w-[300px] h-[200px] rounded-full bg-[hsla(210,80%,50%,0.05)] blur-[80px] pointer-events-none" />
+
       <AppreciationToast
         message={toast.message}
         show={toast.show}
         onHide={() => setToast({ show: false, message: "" })}
       />
 
-      <h1 className="text-xl font-bold text-foreground mb-1 animate-fade-in">Muraja'a</h1>
+      <h1 className="text-xl font-bold text-gradient mb-1 animate-fade-in">Muraja'a</h1>
       <p className="text-sm text-muted-foreground mb-6 animate-fade-in">Revise and protect your memorization</p>
 
       {/* Mode Selector */}
@@ -72,7 +71,7 @@ export default function MurajaaTracker() {
           onClick={() => setMode("fixing")}
           className={cn(
             "flex-1 glass-card rounded-2xl p-4 flex flex-col items-center gap-2 transition-all",
-            mode === "fixing" && "ring-2 ring-primary"
+            mode === "fixing" && "ring-2 ring-primary glow-ring"
           )}
         >
           <Turtle className="w-6 h-6 text-accent" />
@@ -83,7 +82,7 @@ export default function MurajaaTracker() {
           onClick={() => setMode("flow")}
           className={cn(
             "flex-1 glass-card rounded-2xl p-4 flex flex-col items-center gap-2 transition-all",
-            mode === "flow" && "ring-2 ring-primary"
+            mode === "flow" && "ring-2 ring-primary glow-ring"
           )}
         >
           <Zap className="w-6 h-6 text-primary" />
@@ -93,9 +92,9 @@ export default function MurajaaTracker() {
       </div>
 
       {/* Today's Review */}
-      <div className="glass-card rounded-2xl p-5 mb-4 animate-fade-in" style={{ animationDelay: "200ms" }}>
+      <div className="glass-card-glow rounded-2xl p-5 mb-4 animate-fade-in" style={{ animationDelay: "200ms" }}>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl gradient-blue-cyan flex items-center justify-center shadow-lg">
             <RefreshCw className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
@@ -107,11 +106,11 @@ export default function MurajaaTracker() {
         </div>
 
         {mode === "fixing" && data.weakPages.length > 0 && (
-          <div className="bg-muted/50 rounded-xl p-3 mb-4">
+          <div className="bg-secondary/50 rounded-xl p-3 mb-4 border border-border/30">
             <p className="text-xs font-medium text-foreground mb-1">Weak Pages to Focus On:</p>
             <div className="flex flex-wrap gap-2">
               {data.weakPages.slice(0, 4).map((p) => (
-                <span key={p} className="text-xs bg-accent/20 text-accent px-2 py-1 rounded-lg font-medium">
+                <span key={p} className="text-xs bg-accent/15 text-accent px-2 py-1 rounded-lg font-medium border border-accent/20">
                   Page {p}
                 </span>
               ))}
@@ -122,7 +121,7 @@ export default function MurajaaTracker() {
         <Button
           onClick={handleComplete}
           disabled={data.completedToday.muraja}
-          className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+          className="w-full rounded-xl h-12 gradient-blue-cyan text-primary-foreground font-semibold glow-ring hover:opacity-90 transition-opacity"
         >
           {data.completedToday.muraja ? (
             <span className="flex items-center gap-2"><Check className="w-4 h-4" /> Completed</span>
@@ -137,7 +136,7 @@ export default function MurajaaTracker() {
         <div className="glass-card rounded-2xl p-5 animate-fade-in" style={{ animationDelay: "300ms" }}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-foreground flex items-center gap-2">
-              <Star className="w-4 h-4 text-accent" />
+              <Star className="w-4 h-4 text-streak" />
               Spaced Review
             </h2>
             <span className="text-xs text-muted-foreground">
@@ -145,8 +144,8 @@ export default function MurajaaTracker() {
             </span>
           </div>
 
-          <div className="bg-muted/50 rounded-xl p-4 text-center mb-4">
-            <p className="text-3xl font-bold text-foreground mb-1">Page {currentCard.page}</p>
+          <div className="bg-secondary/50 rounded-xl p-4 text-center mb-4 border border-border/30">
+            <p className="text-3xl font-bold text-gradient mb-1">Page {currentCard.page}</p>
             <p className="text-xs text-muted-foreground">
               Interval: {currentCard.interval}d · Reviews: {currentCard.repetitions}
             </p>
@@ -159,11 +158,11 @@ export default function MurajaaTracker() {
                 key={rating}
                 onClick={() => handleRate(rating)}
                 className={cn(
-                  "py-2 rounded-xl text-xs font-medium capitalize transition-all",
-                  rating === "again" && "bg-destructive/10 text-destructive hover:bg-destructive/20",
-                  rating === "hard" && "bg-accent/10 text-accent hover:bg-accent/20",
-                  rating === "good" && "bg-primary/10 text-primary hover:bg-primary/20",
-                  rating === "easy" && "bg-primary/20 text-primary hover:bg-primary/30"
+                  "py-2 rounded-xl text-xs font-medium capitalize transition-all border",
+                  rating === "again" && "bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20",
+                  rating === "hard" && "bg-streak/10 text-streak border-streak/20 hover:bg-streak/20",
+                  rating === "good" && "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20",
+                  rating === "easy" && "bg-success/15 text-success border-success/20 hover:bg-success/25"
                 )}
               >
                 {rating}

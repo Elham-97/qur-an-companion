@@ -18,7 +18,6 @@ export default function QuranViewer() {
       setVerses(data);
       setLoading(false);
     });
-    // Stop audio on page change
     if (audioRef.current) {
       audioRef.current.pause();
       setPlayingKey(null);
@@ -44,17 +43,20 @@ export default function QuranViewer() {
   };
 
   return (
-    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto">
-      <h1 className="text-xl font-bold text-foreground mb-1 animate-fade-in">Qur'an Reader</h1>
+    <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
+      <div className="absolute top-10 right-0 w-[200px] h-[200px] rounded-full bg-[hsla(210,80%,50%,0.05)] blur-[80px] pointer-events-none" />
+
+      <h1 className="text-xl font-bold text-gradient mb-1 animate-fade-in">Qur'an Reader</h1>
       <p className="text-sm text-muted-foreground mb-4 animate-fade-in">Focus mode reading</p>
 
       {/* Page Navigation */}
-      <div className="flex items-center justify-between glass-card rounded-2xl px-4 py-3 mb-4 animate-fade-in">
+      <div className="flex items-center justify-between glass-card-glow rounded-2xl px-4 py-3 mb-4 animate-fade-in">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setPageNum(Math.max(1, pageNum - 1))}
           disabled={pageNum <= 1}
+          className="hover:bg-secondary/50"
         >
           <ChevronLeft className="w-5 h-5" />
         </Button>
@@ -69,6 +71,7 @@ export default function QuranViewer() {
           size="icon"
           onClick={() => setPageNum(Math.min(TOTAL_PAGES, pageNum + 1))}
           disabled={pageNum >= TOTAL_PAGES}
+          className="hover:bg-secondary/50"
         >
           <ChevronRight className="w-5 h-5" />
         </Button>
@@ -89,7 +92,7 @@ export default function QuranViewer() {
                 <div className="flex items-start gap-3">
                   <button
                     onClick={() => playAyah(verse.verse_key)}
-                    className="mt-1 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 hover:bg-primary/20 transition-colors"
+                    className="mt-1 w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center shrink-0 hover:bg-primary/25 transition-colors border border-primary/20"
                   >
                     {playingKey === verse.verse_key ? (
                       <Pause className="w-3.5 h-3.5 text-primary" />
@@ -123,12 +126,12 @@ export default function QuranViewer() {
             const v = parseInt(e.target.value);
             if (v >= 1 && v <= TOTAL_PAGES) setPageNum(v);
           }}
-          className="flex-1 h-10 rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          className="flex-1 h-10 rounded-xl border border-border/50 bg-secondary/30 px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
           placeholder="Go to page..."
         />
         <Button
           onClick={() => {}}
-          className="rounded-xl gradient-primary text-primary-foreground"
+          className="rounded-xl gradient-purple-blue text-primary-foreground glow-ring hover:opacity-90"
         >
           Go
         </Button>
