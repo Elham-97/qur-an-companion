@@ -7,6 +7,7 @@ import ProgressRing from "@/components/ProgressRing";
 import AppreciationToast from "@/components/AppreciationToast";
 import { getTodaysTajwid } from "@/lib/quran-data";
 import { getAppreciation, analyzeBehavior } from "@/lib/feedback";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Dashboard() {
   
@@ -30,7 +31,8 @@ export default function Dashboard() {
     murajaDone: data.completedToday.muraja,
   });
 
-  const firstName = "Student";
+  const { user } = useAuth();
+  const firstName = user?.email?.split("@")[0] || "Student";
 
   return (
     <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto">
