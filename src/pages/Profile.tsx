@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, BookOpen } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { useHifzData } from "@/hooks/useHifzData";
 import { TOTAL_PAGES } from "@/lib/quran-data";
 
@@ -17,7 +17,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
-      <div className="absolute top-10 left-1/3 w-[250px] h-[200px] rounded-full bg-[hsla(260,60%,50%,0.05)] blur-[80px] pointer-events-none" />
+      <div className="absolute top-10 left-1/3 w-[250px] h-[200px] rounded-full bg-[hsla(252,60%,58%,0.06)] blur-[80px] pointer-events-none" />
 
       <h1 className="text-xl font-bold text-gradient mb-6 animate-fade-in">Profile</h1>
 

@@ -17,19 +17,17 @@ export default function Progress() {
 
   return (
     <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
-      <div className="absolute top-10 left-1/4 w-[300px] h-[200px] rounded-full bg-[hsla(260,60%,50%,0.05)] blur-[80px] pointer-events-none" />
+      <div className="absolute top-10 left-1/4 w-[300px] h-[200px] rounded-full bg-[hsla(252,60%,58%,0.06)] blur-[80px] pointer-events-none" />
 
       <h1 className="text-xl font-bold text-gradient mb-1 animate-fade-in">Progress</h1>
       <p className="text-sm text-muted-foreground mb-6 animate-fade-in">Your Qur'an journey overview</p>
 
-      {/* Main Progress */}
       <div className="glass-card-glow rounded-2xl p-6 flex flex-col items-center mb-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
         <ProgressRing progress={data.totalPagesMemorized / TOTAL_PAGES} size={120} strokeWidth={8} />
         <p className="text-3xl font-bold text-gradient mt-3">{progressPercent}%</p>
         <p className="text-sm text-muted-foreground">of the Qur'an memorized</p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
         {stats.map((stat, i) => (
           <div
@@ -46,7 +44,6 @@ export default function Progress() {
         ))}
       </div>
 
-      {/* Today's Completion */}
       <div className="glass-card rounded-2xl p-5 mt-4 animate-fade-in" style={{ animationDelay: "600ms" }}>
         <h2 className="font-semibold text-foreground mb-3">Today's Completion</h2>
         <div className="space-y-2">

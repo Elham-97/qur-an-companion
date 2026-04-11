@@ -17,6 +17,7 @@ export default function Auth() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!email) { setError("Please enter your email."); return; }
     setLoading(true);
     try {
       if (isLogin) {
@@ -26,7 +27,7 @@ export default function Auth() {
       }
       navigate("/");
     } catch (err: any) {
-      setError(err.message || "Authentication failed. Please try again.");
+      setError(err.message || "Authentication failed.");
     } finally {
       setLoading(false);
     }
@@ -35,8 +36,8 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
       {/* Background glow effects */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-[hsla(260,60%,50%,0.08)] blur-[100px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-[hsla(210,80%,50%,0.06)] blur-[80px]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-[hsla(252,60%,58%,0.1)] blur-[100px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-[hsla(210,80%,60%,0.08)] blur-[80px]" />
 
       <div className="w-full max-w-sm animate-fade-in relative z-10">
         <div className="flex flex-col items-center mb-8">

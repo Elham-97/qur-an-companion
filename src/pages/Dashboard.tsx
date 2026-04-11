@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { BookOpen, RefreshCw, Wrench, BookMarked, Flame, Sparkles } from "lucide-react";
-
 import { useHifzData } from "@/hooks/useHifzData";
 import TaskCard from "@/components/TaskCard";
 import ProgressRing from "@/components/ProgressRing";
@@ -36,7 +35,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
       {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[350px] h-[250px] rounded-full bg-[hsla(260,60%,50%,0.06)] blur-[80px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[350px] h-[250px] rounded-full bg-[hsla(252,60%,58%,0.08)] blur-[80px] pointer-events-none" />
 
       <AppreciationToast
         message={toast.message}
@@ -68,6 +67,18 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Stats Row */}
+      <div className="grid grid-cols-2 gap-3 mb-6 animate-fade-in" style={{ animationDelay: "150ms" }}>
+        <div className="glass-card rounded-2xl p-4">
+          <p className="text-2xl font-bold text-foreground">{data.totalPagesMemorized}</p>
+          <p className="text-xs text-muted-foreground">Pages memorized</p>
+        </div>
+        <div className="glass-card rounded-2xl p-4">
+          <p className="text-2xl font-bold text-foreground">{data.weakPages.length}</p>
+          <p className="text-xs text-muted-foreground">Weak pages</p>
+        </div>
+      </div>
+
       {/* Task Cards */}
       <div className="space-y-3">
         <TaskCard
@@ -93,8 +104,8 @@ export default function Dashboard() {
         <TaskCard
           icon={Wrench}
           title="Fixing Pages"
-          subtitle={`Pages ${data.weakPages.slice(0, 2).join(", ")}`}
-          detail="Strengthen 2 weak pages"
+          subtitle={data.weakPages.length > 0 ? `Pages ${data.weakPages.slice(0, 2).join(", ")}` : "No weak pages"}
+          detail="Strengthen weak pages"
           completed={data.completedToday.fixing}
           onComplete={() => handleComplete("fixing")}
           colorClass="gradient-streak"
