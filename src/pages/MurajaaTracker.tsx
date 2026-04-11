@@ -37,7 +37,6 @@ export default function MurajaaTracker() {
       <h1 className="text-xl font-bold text-gradient mb-1 animate-fade-in">Muraja'a</h1>
       <p className="text-sm text-muted-foreground mb-6 animate-fade-in">Revise and protect your memorization</p>
 
-      {/* Juz Info */}
       <div className="glass-card-glow rounded-2xl p-5 mb-4 animate-fade-in" style={{ animationDelay: "100ms" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl gradient-blue-cyan flex items-center justify-center shadow-lg">
@@ -62,7 +61,6 @@ export default function MurajaaTracker() {
         </Button>
       </div>
 
-      {/* Section Navigator */}
       {pages.length > 0 ? (
         <div className="glass-card rounded-2xl p-5 animate-fade-in" style={{ animationDelay: "200ms" }}>
           <div className="flex items-center justify-between mb-4">
@@ -95,8 +93,8 @@ export default function MurajaaTracker() {
                   <span className="text-sm font-medium text-foreground">Page {mp.page}</span>
                   <span className={cn(
                     "text-xs ml-2 px-2 py-0.5 rounded-full",
-                    mp.strength === "strong" && "bg-[hsla(160,55%,42%,0.15)] text-[hsl(160,55%,35%)]",
-                    mp.strength === "weak" && "bg-[hsla(35,85%,55%,0.15)] text-[hsl(35,85%,40%)]",
+                    mp.strength === "strong" && "bg-success/15 text-success",
+                    mp.strength === "weak" && "bg-warning/15 text-warning",
                     mp.strength === "new" && "bg-primary/10 text-primary"
                   )}>
                     {mp.strength}
@@ -108,7 +106,7 @@ export default function MurajaaTracker() {
                     className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                       mp.strength === "strong"
-                        ? "bg-[hsla(160,55%,42%,0.2)] text-[hsl(160,55%,35%)]"
+                        ? "bg-success/20 text-success"
                         : "hover:bg-secondary text-muted-foreground"
                     )}
                     title="Mark as strong"
@@ -120,7 +118,7 @@ export default function MurajaaTracker() {
                     className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                       mp.strength === "weak"
-                        ? "bg-[hsla(35,85%,55%,0.2)] text-[hsl(35,85%,40%)]"
+                        ? "bg-warning/20 text-warning"
                         : "hover:bg-secondary text-muted-foreground"
                     )}
                     title="Mark as weak"
@@ -132,13 +130,12 @@ export default function MurajaaTracker() {
             ))}
           </div>
 
-          {/* Weak pages summary */}
           {data.weakPages.length > 0 && (
-            <div className="mt-4 bg-[hsla(35,85%,55%,0.08)] rounded-xl p-3 border border-[hsla(35,85%,55%,0.15)]">
+            <div className="mt-4 bg-warning/8 rounded-xl p-3 border border-warning/15">
               <p className="text-xs font-medium text-foreground mb-1">⚠️ Weak Pages ({data.weakPages.length})</p>
               <div className="flex flex-wrap gap-1.5">
                 {data.weakPages.map((p) => (
-                  <span key={p} className="text-xs bg-[hsla(35,85%,55%,0.15)] text-[hsl(35,85%,40%)] px-2 py-0.5 rounded-lg font-medium">
+                  <span key={p} className="text-xs bg-warning/15 text-warning px-2 py-0.5 rounded-lg font-medium">
                     {p}
                   </span>
                 ))}

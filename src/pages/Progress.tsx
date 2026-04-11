@@ -1,6 +1,7 @@
-import { BookOpen, Flame, Target, TrendingUp } from "lucide-react";
+import { BookOpen, Flame, Target, TrendingUp, Activity } from "lucide-react";
 import { useHifzData } from "@/hooks/useHifzData";
 import ProgressRing from "@/components/ProgressRing";
+import WeeklyChart from "@/components/WeeklyChart";
 import { TOTAL_PAGES, TOTAL_JUZ } from "@/lib/quran-data";
 
 export default function Progress() {
@@ -8,10 +9,13 @@ export default function Progress() {
   const juzCompleted = Math.floor(data.totalPagesMemorized / 20);
   const progressPercent = ((data.totalPagesMemorized / TOTAL_PAGES) * 100).toFixed(1);
 
+  // Consistency score: based on streak and completion rate
+  const consistency = Math.min(100, Math.round((data.streakDays * 10 + completionRate() * 60)));
+
   const stats = [
     { icon: BookOpen, label: "Pages Memorized", value: data.totalPagesMemorized, color: "gradient-purple-blue" },
     { icon: Target, label: "Juz Completed", value: `${juzCompleted}/${TOTAL_JUZ}`, color: "gradient-blue-cyan" },
-    { icon: Flame, label: "Day Streak", value: data.streakDays, color: "gradient-streak" },
+    { icon: Flame, label: "Day Streak", value: data.streakDays, color: "gradient-purple-blue" },
     { icon: TrendingUp, label: "Weak Pages", value: data.weakPages.length, color: "gradient-pink-purple" },
   ];
 
@@ -22,18 +26,44 @@ export default function Progress() {
       <h1 className="text-xl font-bold text-gradient mb-1 animate-fade-in">Progress</h1>
       <p className="text-sm text-muted-foreground mb-6 animate-fade-in">Your Qur'an journey overview</p>
 
-      <div className="glass-card-glow rounded-2xl p-6 flex flex-col items-center mb-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
+      <div className="glass-card-glow rounded-2xl p-6 flex flex-col items-center mb-4 animate-fade-in" style={{ animationDelay: "100ms" }}>
         <ProgressRing progress={data.totalPagesMemorized / TOTAL_PAGES} size={120} strokeWidth={8} />
         <p className="text-3xl font-bold text-gradient mt-3">{progressPercent}%</p>
         <p className="text-sm text-muted-foreground">of the Qur'an memorized</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      {/* Weekly Chart */}
+      <div className="glass-card rounded-2xl p-5 mb-4 animate-fade-in" style={{ animationDelay: "150ms" }}>
+        <h2 className="font-semibold text-foreground mb-3">This Week</h2>
+        <WeeklyChart memorizedPages={data.memorizedPages} />
+      </div>
+
+      {/* Consistency Score */}
+      <div className="glass-card rounded-2xl p-5 mb-4 animate-fade-in" style={{ animationDelay: "200ms" }}>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-9 h-9 rounded-xl gradient-blue-cyan flex items-center justify-center">
+            <Activity className="w-4 h-4 text-primary-foreground" />
+          </div>
+          <div>
+            <p className="font-semibold text-foreground">Consistency Score</p>
+            <p className="text-xs text-muted-foreground">Based on streak & daily completion</p>
+          </div>
+        </div>
+        <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+          <div
+            className="gradient-purple-blue h-3 rounded-full transition-all duration-700"
+            style={{ width: `${consistency}%` }}
+          />
+        </div>
+        <p className="text-xs text-muted-foreground mt-2 text-right">{consistency}%</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-4">
         {stats.map((stat, i) => (
           <div
             key={stat.label}
             className="glass-card rounded-2xl p-4 animate-fade-in"
-            style={{ animationDelay: `${(i + 2) * 100}ms` }}
+            style={{ animationDelay: `${(i + 3) * 100}ms` }}
           >
             <div className={`w-9 h-9 rounded-xl ${stat.color} flex items-center justify-center mb-3 shadow-lg`}>
               <stat.icon className="w-4 h-4 text-primary-foreground" />
@@ -44,7 +74,7 @@ export default function Progress() {
         ))}
       </div>
 
-      <div className="glass-card rounded-2xl p-5 mt-4 animate-fade-in" style={{ animationDelay: "600ms" }}>
+      <div className="glass-card rounded-2xl p-5 animate-fade-in" style={{ animationDelay: "700ms" }}>
         <h2 className="font-semibold text-foreground mb-3">Today's Completion</h2>
         <div className="space-y-2">
           {Object.entries(data.completedToday).map(([key, done]) => (

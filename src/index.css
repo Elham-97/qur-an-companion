@@ -48,17 +48,18 @@
     /* Custom tokens */
     --success: 160 55% 42%;
     --success-foreground: 0 0% 100%;
-    --streak: 35 85% 55%;
+    --warning: 40 60% 50%;
+    --warning-foreground: 40 80% 20%;
+    --streak: 252 50% 55%;
     --streak-foreground: 0 0% 100%;
     --hifz: 252 60% 58%;
     --muraja: 210 70% 55%;
-    --fixing: 35 85% 55%;
-    --tajwid: 320 50% 55%;
+    --fixing: 230 55% 55%;
+    --tajwid: 280 50% 55%;
 
     /* Gradient tokens */
     --glow-purple: 260 80% 70%;
     --glow-blue: 210 80% 65%;
-    --glow-pink: 320 60% 60%;
   }
 }
 
@@ -100,7 +101,7 @@
   }
 
   .gradient-streak {
-    background: linear-gradient(135deg, hsl(var(--streak)), hsl(35 90% 65%));
+    background: linear-gradient(135deg, hsl(252, 50%, 55%), hsl(260, 60%, 65%));
   }
 
   .gradient-purple-blue {
@@ -108,11 +109,15 @@
   }
 
   .gradient-pink-purple {
-    background: linear-gradient(135deg, hsl(320 55% 55%), hsl(260 60% 60%));
+    background: linear-gradient(135deg, hsl(280 50% 55%), hsl(260 60% 60%));
   }
 
   .gradient-blue-cyan {
     background: linear-gradient(135deg, hsl(210 80% 58%), hsl(185 70% 50%));
+  }
+
+  .gradient-fixing {
+    background: linear-gradient(135deg, hsl(230 55% 55%), hsl(210 60% 60%));
   }
 
   .glow-ring {

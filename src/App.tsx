@@ -10,6 +10,7 @@ import MurajaaTracker from "./pages/MurajaaTracker";
 import Progress from "./pages/Progress";
 import Profile from "./pages/Profile";
 import QuranViewer from "./pages/QuranViewer";
+import MutashabihTrainer from "./pages/MutashabihTrainer";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
@@ -45,6 +46,7 @@ function AppRoutes() {
         <Route path="/hifz" element={<ProtectedRoute><HifzTracker /></ProtectedRoute>} />
         <Route path="/muraja" element={<ProtectedRoute><MurajaaTracker /></ProtectedRoute>} />
         <Route path="/quran" element={<ProtectedRoute><QuranViewer /></ProtectedRoute>} />
+        <Route path="/mutashabih" element={<ProtectedRoute><MutashabihTrainer /></ProtectedRoute>} />
         <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
@@ -59,11 +61,11 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AuthProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
           <AppRoutes />
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
