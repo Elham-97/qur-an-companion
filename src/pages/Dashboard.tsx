@@ -34,7 +34,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen pb-24 px-4 pt-6 max-w-md mx-auto relative">
-      {/* Ambient glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[350px] h-[250px] rounded-full bg-[hsla(252,60%,58%,0.08)] blur-[80px] pointer-events-none" />
 
       <AppreciationToast
@@ -43,7 +42,6 @@ export default function Dashboard() {
         onHide={() => setToast({ show: false, message: "" })}
       />
 
-      {/* Header */}
       <div className="mb-6 animate-fade-in relative z-10">
         <h1 className="text-xl font-bold text-gradient">
           Assalamu Alaikum, {firstName} 🌿
@@ -53,11 +51,10 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* Progress + Streak Row */}
       <div className="flex items-center gap-4 mb-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
         <ProgressRing progress={completionRate()} label="Today" />
         <div className="glass-card-glow rounded-2xl px-5 py-4 flex-1 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl gradient-streak flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl gradient-purple-blue flex items-center justify-center">
             <Flame className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
@@ -67,7 +64,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats Row */}
       <div className="grid grid-cols-2 gap-3 mb-6 animate-fade-in" style={{ animationDelay: "150ms" }}>
         <div className="glass-card rounded-2xl p-4">
           <p className="text-2xl font-bold text-foreground">{data.totalPagesMemorized}</p>
@@ -79,7 +75,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Task Cards */}
       <div className="space-y-3">
         <TaskCard
           icon={BookOpen}
@@ -103,12 +98,12 @@ export default function Dashboard() {
         />
         <TaskCard
           icon={Wrench}
-          title="Fixing Pages"
+          title="Fix Weak Pages"
           subtitle={data.weakPages.length > 0 ? `Pages ${data.weakPages.slice(0, 2).join(", ")}` : "No weak pages"}
           detail="Strengthen weak pages"
           completed={data.completedToday.fixing}
           onComplete={() => handleComplete("fixing")}
-          colorClass="gradient-streak"
+          colorClass="gradient-fixing"
           delay={400}
         />
         <TaskCard
