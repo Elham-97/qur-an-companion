@@ -19,9 +19,9 @@ export default function BottomNav() {
   if (!user || location.pathname === "/auth") return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/30 px-2 pb-safe"
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/40 px-2 pb-safe"
          style={{
-           background: 'linear-gradient(135deg, hsla(230, 25%, 10%, 0.9), hsla(250, 25%, 8%, 0.95))',
+           background: 'hsla(0, 0%, 100%, 0.85)',
            backdropFilter: 'blur(20px)',
            WebkitBackdropFilter: 'blur(20px)',
          }}>
@@ -39,8 +39,14 @@ export default function BottomNav() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <item.icon className={cn("w-5 h-5", active && "stroke-[2.5] drop-shadow-[0_0_6px_hsla(260,60%,60%,0.5)]")} />
+              <item.icon className={cn(
+                "w-5 h-5",
+                active && "stroke-[2.5] drop-shadow-[0_0_6px_hsla(252,60%,58%,0.5)]"
+              )} />
               <span className="text-[10px] font-medium">{item.label}</span>
+              {active && (
+                <div className="w-1 h-1 rounded-full bg-primary" />
+              )}
             </button>
           );
         })}

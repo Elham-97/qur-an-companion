@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import React, { createContext, useContext, useState, useEffect } from "react";
+
+interface User {
+  email: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -17,23 +19,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-    return unsubscribe;
+    const saved = localStorage.getItem("hifz_user");
+    if (saved) {
+      setUser(JSON.parse(saved));
+    }
+    setLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, _password: string) => {
+    const u = { email };
+    localStorage.setItem("hifz_user", JSON.stringify(u));
+    setUser(u);
   };
 
-  const signup = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+  const signup = async (email: string, _password: string) => {
+    const u = { email };
+    localStorage.setItem("hifz_user", JSON.stringify(u));
+    setUser(u);
   };
 
   const logout = async () => {
-    await signOut(auth);
+    localStorage.removeItem("hifz_user");
+    setUser(null);
   };
 
   return (

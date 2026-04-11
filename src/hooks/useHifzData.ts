@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect, useCallback } from "react";
+
+export interface MemorizedPage {
+  page: number;
+  date: string;
+  strength: "strong" | "weak" | "new";
+}
 
 export interface HifzData {
   totalPagesMemorized: number;
+  memorizedPages: MemorizedPage[];
   completedToday: {
     hifz: boolean;
     muraja: boolean;
@@ -18,89 +22,119 @@ export interface HifzData {
   currentMurajaJuz: number;
 }
 
-const defaultData: HifzData = {
-  totalPagesMemorized: 0,
-  completedToday: { hifz: false, muraja: false, fixing: false, tajwid: false },
-  streakDays: 0,
-  lastActiveDate: "",
-  weakPages: [12, 45, 78, 134, 201],
-  currentHifzPages: [1, 2],
-  currentMurajaJuz: 1,
-};
+const STORAGE_KEY = "hifz_data";
 
 function getTodayStr() {
   return new Date().toISOString().split("T")[0];
 }
 
+function loadData(): HifzData {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw) as HifzData;
+      const today = getTodayStr();
+      if (d.lastActiveDate !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (d.lastActiveDate === yesterday.toISOString().split("T")[0]) {
+          d.streakDays += 1;
+        } else {
+          d.streakDays = 0;
+        }
+        d.completedToday = { hifz: false, muraja: false, fixing: false, tajwid: false };
+        d.lastActiveDate = today;
+      }
+      if (!d.memorizedPages) d.memorizedPages = [];
+      return d;
+    }
+  } catch {}
+  return {
+    totalPagesMemorized: 0,
+    memorizedPages: [],
+    completedToday: { hifz: false, muraja: false, fixing: false, tajwid: false },
+    streakDays: 0,
+    lastActiveDate: getTodayStr(),
+    weakPages: [],
+    currentHifzPages: [1, 2],
+    currentMurajaJuz: 1,
+  };
+}
+
 export function useHifzData() {
-  const { user } = useAuth();
-  const [data, setData] = useState<HifzData>(defaultData);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<HifzData>(loadData);
 
   useEffect(() => {
-    if (!user) { setLoading(false); return; }
-    const load = async () => {
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        const d = snap.data() as HifzData;
-        const today = getTodayStr();
-        if (d.lastActiveDate !== today) {
-          d.completedToday = { hifz: false, muraja: false, fixing: false, tajwid: false };
-          // Update streak
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          if (d.lastActiveDate === yesterday.toISOString().split("T")[0]) {
-            d.streakDays += 1;
-          } else if (d.lastActiveDate !== today) {
-            d.streakDays = 0;
-          }
-          d.lastActiveDate = today;
-          await updateDoc(ref, d as any);
-        }
-        setData(d);
-      } else {
-        const initial = { ...defaultData, lastActiveDate: getTodayStr() };
-        await setDoc(ref, initial);
-        setData(initial);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }, [data]);
+
+  const updateData = useCallback((partial: Partial<HifzData>) => {
+    setData((prev) => ({ ...prev, ...partial }));
+  }, []);
+
+  const addPages = useCallback((pages: number[]) => {
+    setData((prev) => {
+      const existing = new Set(prev.memorizedPages.map((p) => p.page));
+      const newPages: MemorizedPage[] = pages
+        .filter((p) => !existing.has(p))
+        .map((p) => ({ page: p, date: getTodayStr(), strength: "new" as const }));
+      const memorizedPages = [...prev.memorizedPages, ...newPages];
+      const weakPages = memorizedPages.filter((p) => p.strength === "weak").map((p) => p.page);
+      return {
+        ...prev,
+        memorizedPages,
+        totalPagesMemorized: memorizedPages.length,
+        weakPages,
+        currentHifzPages: [
+          memorizedPages.length + 1,
+          memorizedPages.length + 2,
+        ] as [number, number],
+      };
+    });
+  }, []);
+
+  const removePage = useCallback((page: number) => {
+    setData((prev) => {
+      const memorizedPages = prev.memorizedPages.filter((p) => p.page !== page);
+      const weakPages = memorizedPages.filter((p) => p.strength === "weak").map((p) => p.page);
+      return {
+        ...prev,
+        memorizedPages,
+        totalPagesMemorized: memorizedPages.length,
+        weakPages,
+      };
+    });
+  }, []);
+
+  const setPageStrength = useCallback((page: number, strength: "strong" | "weak") => {
+    setData((prev) => {
+      const memorizedPages = prev.memorizedPages.map((p) =>
+        p.page === page ? { ...p, strength } : p
+      );
+      const weakPages = memorizedPages.filter((p) => p.strength === "weak").map((p) => p.page);
+      return { ...prev, memorizedPages, weakPages };
+    });
+  }, []);
+
+  const completeTask = useCallback(async (task: keyof HifzData["completedToday"]) => {
+    setData((prev) => {
+      const completedToday = { ...prev.completedToday, [task]: true };
+      let updates: Partial<HifzData> = { completedToday, lastActiveDate: getTodayStr() };
+      if (task === "muraja") {
+        updates.currentMurajaJuz = (prev.currentMurajaJuz % 30) + 1;
       }
-      setLoading(false);
-    };
-    load();
-  }, [user]);
+      const allDone = Object.values(completedToday).every(Boolean);
+      if (allDone) {
+        updates.streakDays = prev.streakDays + 1;
+      }
+      return { ...prev, ...updates };
+    });
+  }, []);
 
-  const updateData = async (partial: Partial<HifzData>) => {
-    if (!user) return;
-    const updated = { ...data, ...partial };
-    setData(updated);
-    await updateDoc(doc(db, "users", user.uid), partial as any);
-  };
-
-  const completeTask = async (task: keyof HifzData["completedToday"]) => {
-    const completedToday = { ...data.completedToday, [task]: true };
-    let updates: Partial<HifzData> = { completedToday, lastActiveDate: getTodayStr() };
-
-    if (task === "hifz") {
-      updates.totalPagesMemorized = data.totalPagesMemorized + 2;
-      updates.currentHifzPages = [data.currentHifzPages[1] + 1, data.currentHifzPages[1] + 2] as [number, number];
-    }
-    if (task === "muraja") {
-      updates.currentMurajaJuz = (data.currentMurajaJuz % 30) + 1;
-    }
-
-    // Check if all tasks done → increment streak
-    const allDone = Object.values(completedToday).every(Boolean);
-    if (allDone) {
-      updates.streakDays = data.streakDays + 1;
-    }
-
-    await updateData(updates);
-  };
-
-  const completionRate = () => {
+  const completionRate = useCallback(() => {
     const done = Object.values(data.completedToday).filter(Boolean).length;
     return done / 4;
-  };
+  }, [data.completedToday]);
 
-  return { data, loading, completeTask, updateData, completionRate };
+  return { data, loading: false, completeTask, updateData, completionRate, addPages, removePage, setPageStrength };
 }
